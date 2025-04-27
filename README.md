@@ -32,7 +32,7 @@ Then, add the library dependency to your app's build.gradle file:
 
 ```gradle
 dependencies {
-    implementation 'com.github.arya458:FaceVerification:1.0.0' // Replace with the latest version
+     implementation 'com.github.arya458:AndroidFaceVerificationLibrary:1.0.0' // Replace with the latest version
     // ... other dependencies
 }
 ```
