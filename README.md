@@ -32,7 +32,9 @@ Then, add the library dependency to your app's build.gradle file:
 
 ```gradle
 dependencies {
-     implementation 'com.github.arya458:AndroidFaceVerificationLibrary:1.0.0' // Replace with the latest version
+     implementation("com.github.arya458:AndroidFaceVerificationLibrary:1.0.0") // Replace with the latest version
+     implementation("com.google.mlkit:face-detection:16.1.7")
+
     // ... other dependencies
 }
 ```
@@ -67,33 +69,41 @@ import com.aria.danesh.faceverificationlib.utils.ImageProxyHelperKt.imageProxyTo
 fun MyVerificationScreen() {
     val context = LocalContext.current
     val faceDetectionCallback = remember {
-        object : FaceVerificationComponent.FaceDetectionCallback {
-            override fun onOneFaceDetected(imageProxy: androidx.camera.core.ImageProxy) {
-                // One face detected! Process the imageProxy here.
-                val base64Image = imageProxyToBase64(imageProxy)
-                base64Image?.let {
-                    android.util.Log.d("FaceVerification", "Base64 Image (first 50 chars): ${it.substring(0, 50)}...")
-                    // Send to your verification backend or process locally
+                    object : FaceDetectionCallback {
+                        override fun onManyFacesDetected(
+                            faces: List<Face?>,
+                            imageProxy: ImageProxy
+                        ) {
+                        }
+
+                        override fun onOneFaceDetected(face: Face, imageProxy: ImageProxy) {
+                            // One face detected! Process the imageProxy here.
+                            val base64Image = imageProxyToBase64(imageProxy)
+                            base64Image?.let {
+                                android.util.Log.d("FaceVerification", "Base64 Image (first 50 chars): ${it.substring(0, 50)}...")
+                                // Send to your verification backend or process locally
+                            }
+                            imageProxy.close() // Remember to close the ImageProxy
+                        }
+
+                        override fun onFaceDetectionError(exception: Exception) {
+                        }
+
+                        override fun onNoFaceDetected(imageProxy: ImageProxy) {
+                            android.util.Log.d("FaceVerification", "No face detected")
+                            // Handle no face detected scenario
+                        }
+                    }
                 }
-                imageProxy.close() // Remember to close the ImageProxy
-            }
 
-            override fun onNoFaceDetected() {
-                android.util.Log.d("FaceVerification", "No face detected")
-                // Handle no face detected scenario
-            }
 
-            override fun onMultipleFacesDetected() {
-                android.util.Log.d("FaceVerification", "Multiple faces detected")
-                // Handle multiple faces detected scenario
-            }
-        }
-    }
-
-    FaceVerificationComponent(
-        context = context,
-        faceDetectionCallback = faceDetectionCallback
-    )
+                FaceVerificationComponent(
+                    onSmile = {},
+                    onFaceDetected = {},
+                    onFacesDetected = {},
+                    noFaceDetected = {},
+                    onError = {}
+                )
 }
 ```
 
