@@ -430,7 +430,9 @@
         <div class="col-md-6">
             <h4>Add Dependency</h4>
             <pre class="code-block"><code>dependencies {
-    implementation 'com.github.arya458:FaceVerification:1.0.0'
+    implementation("com.github.arya458:FaceVerification:1.0.0")
+    implementation("com.google.mlkit:face-detection:16.1.7")
+
 }</code></pre>
         </div>
     </div>
@@ -442,22 +444,43 @@
     <div class="row">
         <div class="col-12">
                 <pre class="code-block"><code>@Composable
-fun MyVerificationScreen() {
-    val context = LocalContext.current
+val context = LocalContext.current
     val faceDetectionCallback = remember {
-        object : FaceVerificationComponent.FaceDetectionCallback {
-            override fun onOneFaceDetected(imageProxy: ImageProxy) {
-                // Handle face detection
-                val base64Image = imageProxyToBase64(imageProxy)
-                // Process the image
-            }
-        }
-    }
+                    object : FaceDetectionCallback {
+                        override fun onManyFacesDetected(
+                            faces: List<Face?>,
+                            imageProxy: ImageProxy
+                        ) {
+                        }
 
-    FaceVerificationComponent(
-        context = context,
-        faceDetectionCallback = faceDetectionCallback
-    )
+                        override fun onOneFaceDetected(face: Face, imageProxy: ImageProxy) {
+                            // One face detected! Process the imageProxy here.
+                            val base64Image = imageProxyToBase64(imageProxy)
+                            base64Image?.let {
+                                android.util.Log.d("FaceVerification", "Base64 Image (first 50 chars): ${it.substring(0, 50)}...")
+                                // Send to your verification backend or process locally
+                            }
+                            imageProxy.close() // Remember to close the ImageProxy
+                        }
+
+                        override fun onFaceDetectionError(exception: Exception) {
+                        }
+
+                        override fun onNoFaceDetected(imageProxy: ImageProxy) {
+                            android.util.Log.d("FaceVerification", "No face detected")
+                            // Handle no face detected scenario
+                        }
+                    }
+                }
+
+
+                FaceVerificationComponent(
+                    onSmile = {},
+                    onFaceDetected = {},
+                    onFacesDetected = {},
+                    noFaceDetected = {},
+                    onError = {}
+                )
 }</code></pre>
         </div>
     </div>
