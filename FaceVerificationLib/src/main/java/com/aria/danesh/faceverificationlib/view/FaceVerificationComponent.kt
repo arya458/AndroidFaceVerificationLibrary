@@ -2,7 +2,6 @@ package com.aria.danesh.faceverificationlib.view
 
 import android.Manifest
 import android.content.pm.PackageManager
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.OptIn
 import androidx.camera.core.ExperimentalGetImage
@@ -82,21 +81,21 @@ fun FaceVerificationComponent(
     var color by remember { mutableStateOf<Color>(pColor) }
     var icon by remember { mutableIntStateOf(0) }
 
-    val cameraPermissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        cameraPermissionGranted = isGranted
-    }
+//    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+//        ActivityResultContracts.RequestPermission()
+//    ) { isGranted: Boolean ->
+//        cameraPermissionGranted = isGranted
+//    }
 
-    LaunchedEffect(Unit) {
-        val permissionResult =
-            ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
-        if (permissionResult == PackageManager.PERMISSION_GRANTED) {
-            cameraPermissionGranted = true
-        } else {
-            cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
-        }
-    }
+//    LaunchedEffect(Unit) {
+//        val permissionResult =
+//            ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+//        if (permissionResult == PackageManager.PERMISSION_GRANTED) {
+//            cameraPermissionGranted = true
+//        } else {
+//            cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+//        }
+//    }
 
     if (cameraPermissionGranted) {
         val faceDetectionCallback = remember {
