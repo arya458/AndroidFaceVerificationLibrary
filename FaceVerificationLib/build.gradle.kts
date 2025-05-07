@@ -6,8 +6,6 @@ plugins {
 
 android {
     namespace = "com.aria.danesh.faceverificationlib"
-    compileSdk = 35
-
     defaultConfig {
         minSdk = 24
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -39,7 +37,7 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
+//    implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
@@ -47,7 +45,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.appcompat)
     implementation(libs.lottie.compose)
-    implementation(libs.face.detection)
+    api(libs.face.detection)
     api (libs.androidx.camera.camera2)
     api (libs.androidx.camera.lifecycle)
     api (libs.androidx.camera.mlkit.vision)
