@@ -8,6 +8,7 @@ android {
     namespace = "com.aria.danesh.faceverificationlib"
     defaultConfig {
         minSdk = 24
+        compileSdk = 34
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
