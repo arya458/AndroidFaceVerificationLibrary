@@ -2,7 +2,6 @@ package com.aria.danesh.faceverificationlib.view
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.OptIn
@@ -45,7 +44,8 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.aria.danesh.faceverificationlib.R
 import com.aria.danesh.faceverificationlib.callback.FaceDetectionCallback
 import com.aria.danesh.faceverificationlib.managers.FaceDetectionManager
-import com.aria.danesh.faceverificationlib.utils.imageProxyToBase64
+import com.aria.danesh.faceverificationlib.utils.LivenessDetectorAnalyzer
+import com.aria.danesh.faceverificationlib.utils.LivenessState
 import com.aria.danesh.faceverificationlib.view.compose.FaceOverlay
 import com.google.mlkit.vision.face.Face
 
@@ -53,8 +53,7 @@ import com.google.mlkit.vision.face.Face
 @OptIn(ExperimentalGetImage::class)
 @Composable
 fun FaceVerificationComponent(
-    onSmile: (ImageProxy) -> Unit,
-    onFaceDetected: () -> Unit,
+    onFaceDetected: (LivenessState) -> Unit,
     onFacesDetected: () -> Unit,
     noFaceDetected: () -> Unit,
     onError: () -> Unit
@@ -67,6 +66,17 @@ fun FaceVerificationComponent(
     var faceDetectionError by remember { mutableStateOf<String>("") }
     var cameraPermissionGranted by remember { mutableStateOf(false) }
     var imageProxy by remember { mutableStateOf<ImageProxy?>(null) }
+    var faceLiveness by remember { mutableStateOf<LivenessState>(LivenessState.Initial) }
+
+    val livenessDetector = remember {
+        LivenessDetectorAnalyzer(
+            onLivenessResult = { faceLiveness = it },
+            requiredBlinks = 2, // Require two blinks
+            motionThreshold = 8f, // Increase motion sensitivity
+            motionDetectionWindowMs = 750L // Adjust motion window
+        )
+    }
+
 
     val pColor = MaterialTheme.colorScheme.primary
     val errorColor = MaterialTheme.colorScheme.error
@@ -93,21 +103,30 @@ fun FaceVerificationComponent(
         val faceDetectionCallback = remember {
             object : FaceDetectionCallback {
                 override fun onOneFaceDetected(face: Face, ip: ImageProxy) {
-                    detectedFace = face
-                    icon = R.drawable.smile
-                    if ((face.smilingProbability ?: 0f) > 0.5f) {
-                        color = Color.Green
-                        faceDetectionError = " Nice "
-                        imageProxy?.let {
-                            onSmile(ip)
+                    faceDetectionError = when (faceLiveness) {
+                        is LivenessState.Initial -> {
+                            "Initial"
                         }
 
-                    } else {
-                        color = pColor
-                        faceDetectionError = " Smile Please "
-                        onFaceDetected()
-                    }
+                        is LivenessState.Success -> {
+                            color = Color.Green
+                            "Success"
+                        }
 
+                        is LivenessState.Failed -> {
+                            color = Color.Red
+                            "Failed"
+                        }
+
+                        is LivenessState.Processing -> {
+                            color = Color.Blue
+                            "Processing"
+                        }
+                    }
+                    detectedFace = face
+                    icon = R.drawable.smile
+                    livenessDetector.processFace(face, ip)
+                    onFaceDetected(faceLiveness)
                     imageProxy = ip
                 }
 
@@ -117,6 +136,7 @@ fun FaceVerificationComponent(
                     detectedFace = null
                     color = errorColor
                     imageProxy = ip
+                    livenessDetector.resetLiveness()
                     onFacesDetected()
                 }
 
@@ -126,6 +146,7 @@ fun FaceVerificationComponent(
                     detectedFace = null
                     color = errorColor
                     imageProxy = ip
+                    livenessDetector.resetLiveness()
                     noFaceDetected()
                 }
 
@@ -135,6 +156,7 @@ fun FaceVerificationComponent(
                     icon = R.drawable.bad
                     detectedFace = null
                     color = errorColor
+                    livenessDetector.resetLiveness()
                     onError()
                 }
             }
@@ -153,7 +175,7 @@ fun FaceVerificationComponent(
                 modifier = Modifier.fillMaxSize()
             )
             detectedFace?.let { face ->
-                FaceOverlay(face, R.drawable.frame, imageProxy, true, color)
+                FaceOverlay(face, R.drawable.frame, imageProxy, false, color)
             }
 
             if (icon != 0)

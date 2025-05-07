@@ -1,35 +1,32 @@
 package com.aria.danesh.faceverification
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import com.aria.danesh.faceverification.ui.theme.FaceVerificationTheme
-import com.aria.danesh.faceverificationlib.view.FaceVerificationComponent
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import com.aria.danesh.faceverificationlib.utils.imageProxyToBase64
+import com.aria.danesh.faceverification.ui.theme.FaceVerificationTheme
+import com.aria.danesh.faceverificationlib.view.FaceVerificationComponent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
-import java.util.UUID
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,14 +40,9 @@ class MainActivity : ComponentActivity() {
                 var bitmap by remember { mutableStateOf<Bitmap?>(null) }
 
                 FaceVerificationComponent(
-                    onSmile = { imageProxy ->
-
-                        Log.d("Image", "onSmile: ${imageProxyToBase64(imageProxy)}")
-
-                    },
                     onFaceDetected = {
                         bitmap = null
-                                     },
+                    },
                     onFacesDetected = {
                         bitmap = null
                     },
@@ -61,8 +53,8 @@ class MainActivity : ComponentActivity() {
                         bitmap = null
                     },
 
-                )
-                bitmap?.let{
+                    )
+                bitmap?.let {
                     val filename = "my_image_${System.currentTimeMillis()}.jpg"
                     val uri = bitmapSaver(it, Bitmap.CompressFormat.JPEG, 90, filename)
                     if (uri != null) {
@@ -107,13 +99,22 @@ private fun saveBitmapInternal(
             val contentValues = ContentValues().apply {
                 put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
                 put(MediaStore.MediaColumns.MIME_TYPE, "image/${format.toString().lowercase()}")
-                put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/YourAppName") // Optional subfolder
+                put(
+                    MediaStore.MediaColumns.RELATIVE_PATH,
+                    Environment.DIRECTORY_PICTURES + "/YourAppName"
+                ) // Optional subfolder
             }
-            context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)?.let {
+            context.contentResolver.insert(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                contentValues
+            )?.let {
                 context.contentResolver.openOutputStream(it)
             }
         } else {
-            val directory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "YourAppName") // Ensure directory exists
+            val directory = File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                "YourAppName"
+            ) // Ensure directory exists
             if (!directory.exists()) {
                 directory.mkdirs()
             }
@@ -126,8 +127,14 @@ private fun saveBitmapInternal(
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                 val values = ContentValues()
                 values.put(MediaStore.Images.Media.DATA, it.toString())
-                values.put(MediaStore.Images.Media.MIME_TYPE, "image/${format.toString().lowercase()}")
-                uri = context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+                values.put(
+                    MediaStore.Images.Media.MIME_TYPE,
+                    "image/${format.toString().lowercase()}"
+                )
+                uri = context.contentResolver.insert(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    values
+                )
             } else {
                 val cursor = context.contentResolver.query(
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
@@ -138,7 +145,8 @@ private fun saveBitmapInternal(
                 )
                 cursor?.use {
                     if (it.moveToFirst()) {
-                        val path = it.getString(it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
+                        val path =
+                            it.getString(it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
                         uri = Uri.fromFile(File(path))
                     }
                 }

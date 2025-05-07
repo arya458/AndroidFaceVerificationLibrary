@@ -37,7 +37,7 @@ fun imageProxyToBase64(imageProxy: ImageProxy): String? {
 
         val yuvImage = YuvImage(nv21, ImageFormat.NV21, imageProxy.width, imageProxy.height, null)
         val out = ByteArrayOutputStream()
-        yuvImage.compressToJpeg(android.graphics.Rect(0, 0, imageProxy.width, imageProxy.height), 90, out)
+        yuvImage.compressToJpeg(Rect(0, 0, imageProxy.width, imageProxy.height), 90, out)
         val jpegBytes = out.toByteArray()
         imageProxy.close()
         return Base64.encodeToString(jpegBytes, Base64.DEFAULT)

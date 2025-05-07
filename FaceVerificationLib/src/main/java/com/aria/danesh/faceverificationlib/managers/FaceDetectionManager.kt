@@ -43,7 +43,7 @@ fun faceDetector(
 
 fun cameraSelector(): CameraSelector {
     return CameraSelector.Builder()
-        .requireLensFacing(CameraSelector.LENS_FACING_FRONT)
+        .requireLensFacing(CameraSelector.LENS_FACING_BACK)
         .build()
 }
 
@@ -78,7 +78,6 @@ class FaceDetectionManager(
             .build()
 
         imageAnalysis.setAnalyzer(executor) { imageProxy ->
-            // and calling the callback methods
             val mediaImage = imageProxy.image
             if (mediaImage != null) {
                 val image = InputImage.fromMediaImage(
