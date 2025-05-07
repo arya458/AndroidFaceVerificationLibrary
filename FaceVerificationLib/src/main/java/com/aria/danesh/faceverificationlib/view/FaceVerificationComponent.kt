@@ -49,7 +49,6 @@ import com.aria.danesh.faceverificationlib.utils.LivenessState
 import com.aria.danesh.faceverificationlib.view.compose.FaceOverlay
 import com.google.mlkit.vision.face.Face
 
-
 @OptIn(ExperimentalGetImage::class)
 @Composable
 fun FaceVerificationComponent(

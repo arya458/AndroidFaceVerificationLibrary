@@ -22,5 +22,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "FaceVerification"
-include(":app")
+//include(":app")
 include(":FaceVerificationLib")
