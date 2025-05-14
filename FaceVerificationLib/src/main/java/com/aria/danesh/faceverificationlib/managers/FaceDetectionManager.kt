@@ -1,27 +1,21 @@
 package com.aria.danesh.faceverificationlib.managers
 
-import android.R.attr.height
-import android.R.attr.width
 import android.content.Context
-import android.graphics.PointF
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ComposableOpenTarget
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import com.aria.danesh.faceverificationlib.callback.FaceDetectionCallback
 import com.aria.danesh.faceverificationlib.view.compose.UniversalData.isFrontCamera
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.face.Face
-import com.google.mlkit.vision.face.FaceDetectorOptions
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetector
+import com.google.mlkit.vision.face.FaceDetectorOptions
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -134,10 +128,5 @@ class FaceDetectionManager(
     fun stopCamera() {
         cameraProviderFuture.get()?.unbindAll()
         executor.shutdown()
-    }
-
-    @Composable
-    fun OverLayoutView(){
-
     }
 }
