@@ -10,6 +10,7 @@ android {
     defaultConfig {
         applicationId = "com.aria.danesh.faceverification"
         minSdk = 24
+        compileSdk = 36
         versionCode = 1
         versionName = "1.0"
 

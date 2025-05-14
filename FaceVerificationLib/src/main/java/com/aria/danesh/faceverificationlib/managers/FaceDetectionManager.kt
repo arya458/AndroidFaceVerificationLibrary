@@ -15,6 +15,8 @@ import androidx.compose.runtime.ComposableOpenTarget
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import com.aria.danesh.faceverificationlib.callback.FaceDetectionCallback
+import com.aria.danesh.faceverificationlib.view.compose.UniversalData.isFrontCamera
+import com.google.common.util.concurrent.ListenableFuture
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.Face
 import com.google.mlkit.vision.face.FaceDetectorOptions
@@ -41,9 +43,10 @@ fun faceDetector(
     return FaceDetection.getClient(faceDetectorOptions)
 }
 
-fun cameraSelector(): CameraSelector {
+fun cameraSelector(lensFacing: Int = CameraSelector.LENS_FACING_BACK): CameraSelector {
+    isFrontCamera = lensFacing==CameraSelector.LENS_FACING_FRONT
     return CameraSelector.Builder()
-        .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+        .requireLensFacing(lensFacing)
         .build()
 }
 
@@ -53,11 +56,13 @@ class FaceDetectionManager(
     private val context: Context,
     private val lifecycleOwner: LifecycleOwner,
     private val previewView: PreviewView,
-    private val callback: FaceDetectionCallback
-) {
-    private var cameraProviderFuture = ProcessCameraProvider.getInstance(context)
-    private val detector = faceDetector()
+    private val callback: FaceDetectionCallback,
+    private var cameraProviderFuture: ListenableFuture<ProcessCameraProvider> = ProcessCameraProvider.getInstance(context),
+    private val detector: FaceDetector = faceDetector(),
+    private val cameraSelector: CameraSelector =cameraSelector(),
     private val executor: ExecutorService = Executors.newFixedThreadPool(10)
+) {
+
 
     init {
         startCamera()
@@ -72,7 +77,6 @@ class FaceDetectionManager(
 
     private fun bindPreview(cameraProvider: ProcessCameraProvider) {
         val preview: Preview = Preview.Builder().build()
-        val cameraSelector =cameraSelector()
         val imageAnalysis = ImageAnalysis.Builder()
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .build()

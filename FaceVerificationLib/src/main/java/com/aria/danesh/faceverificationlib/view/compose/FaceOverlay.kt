@@ -13,14 +13,20 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import com.aria.danesh.faceverificationlib.view.compose.UniversalData.isFrontCamera
 import com.google.mlkit.vision.face.Face
+
+object UniversalData{
+
+    var isFrontCamera = false
+
+}
 
 @Composable
 fun FaceOverlay(
     detectedFace: Face?,
     @DrawableRes frameDrawableId: Int,
     imageProxy: ImageProxy?,
-    isFrontCamera: Boolean = true, // Add a flag for front camera
     color: Color
 ) {
     val density = LocalDensity.current
