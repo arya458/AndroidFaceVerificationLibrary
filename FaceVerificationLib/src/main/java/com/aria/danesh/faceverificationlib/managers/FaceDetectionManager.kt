@@ -15,6 +15,7 @@ import androidx.compose.runtime.ComposableOpenTarget
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import com.aria.danesh.faceverificationlib.callback.FaceDetectionCallback
+import com.aria.danesh.faceverificationlib.state.FaceDetectionState
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.Face
 import com.google.mlkit.vision.face.FaceDetectorOptions
@@ -57,7 +58,7 @@ class FaceDetectionManager(
 ) {
     private var cameraProviderFuture = ProcessCameraProvider.getInstance(context)
     private val detector = faceDetector()
-    private val executor: ExecutorService = Executors.newFixedThreadPool(10)
+    private val executor: ExecutorService = Executors.newSingleThreadExecutor() // A single thread is sufficient
 
     init {
         startCamera()
@@ -72,44 +73,30 @@ class FaceDetectionManager(
 
     private fun bindPreview(cameraProvider: ProcessCameraProvider) {
         val preview: Preview = Preview.Builder().build()
-        val cameraSelector =cameraSelector()
+        val cameraSelector = cameraSelector()
         val imageAnalysis = ImageAnalysis.Builder()
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .build()
 
         imageAnalysis.setAnalyzer(executor) { imageProxy ->
-            // and calling the callback methods
             val mediaImage = imageProxy.image
             if (mediaImage != null) {
-                val image = InputImage.fromMediaImage(
-                    mediaImage,
-                    imageProxy.imageInfo.rotationDegrees
-                )
+                val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
                 detector.process(image)
                     .addOnSuccessListener { faces ->
-
-                        when{
-                            faces.isEmpty()->{
-                                callback.onNoFaceDetected(imageProxy)
-                            }
-
-                            faces.size>1 ->{
-                                callback.onManyFacesDetected(faces.toList(),imageProxy)
-                            }
-
-                            else->{
-                                callback.onOneFaceDetected(faces[0],imageProxy)
-                            }
+                        val state = when {
+                            faces.isEmpty() -> FaceDetectionState.NoFace(imageProxy)
+                            faces.size > 1 -> FaceDetectionState.ManyFaces(faces, imageProxy)
+                            else -> FaceDetectionState.OneFace(faces.first(), imageProxy)
                         }
-
-                        imageProxy.close()
+                        callback.onFaceDetectionStateChanged(state)
                     }
                     .addOnFailureListener { e ->
-                        callback.onFaceDetectionError(e)
-                        imageProxy.close()
+                        callback.onFaceDetectionStateChanged(FaceDetectionState.Error(e))
+                        imageProxy.close() // Ensure proxy is closed on failure
                     }
             } else {
-                imageProxy.close()
+                imageProxy.close() // Close if mediaImage is null
             }
         }
 
@@ -117,24 +104,16 @@ class FaceDetectionManager(
 
         try {
             cameraProvider.unbindAll()
-            cameraProvider.bindToLifecycle(
-                lifecycleOwner,
-                cameraSelector,
-                preview,
-                imageAnalysis
-            )
+            cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview, imageAnalysis)
         } catch (e: Exception) {
-            callback.onFaceDetectionError(e)
+            callback.onFaceDetectionStateChanged(FaceDetectionState.Error(e))
         }
     }
 
     fun stopCamera() {
         cameraProviderFuture.get()?.unbindAll()
-        executor.shutdown()
-    }
-
-    @Composable
-    fun OverLayoutView(){
-
+        if (!executor.isShutdown) {
+            executor.shutdown()
+        }
     }
 }
