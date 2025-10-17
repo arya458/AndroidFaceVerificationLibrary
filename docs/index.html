@@ -5,341 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Android Face Verification Library by Aria Danesh</title>
 
-    <!-- Author Metadata -->
+    <!-- Meta Tags -->
     <meta name="author" content="Aria Danesh">
-    <meta name="creator" content="Aria Danesh">
-    <meta name="publisher" content="Aria Danesh">
-    <meta name="copyright" content="© 2025 Aria Danesh">
-
-    <!-- Description -->
-    <meta name="description"
-          content="A robust Android face verification library for real-time face detection and authentication using ML Kit and Jetpack Compose.">
-
-    <!-- Keywords -->
-    <meta name="keywords" content="
-    aria danesh,
-    Aria danesh,
-    aria Danesh,
-    Aria Danesh,
-    danesh,
-    aria,
-        android face verification,
-        face detection android,
-        biometric authentication,
-        facial recognition,
-        ML Kit face detection,
-        Jetpack Compose UI,
-        Android security,
-        face authentication,
-        real-time face detection,
-        Android biometrics,
-        face recognition library,
-        mobile face verification,
-        Android ML Kit,
-        face detection API,
-        camera integration,
-        CameraX API,
-        Android authentication,
-        face tracking,
-        face landmarks detection,
-        face matching,
-        face similarity,
-        face recognition SDK,
-        Android security library,
-        face detection algorithm,
-        face verification system,
-        facial authentication SDK,
-        face recognition accuracy,
-        face detection performance,
-        face recognition speed,
-        face detection precision,
-        face recognition confidence,
-        face detection threshold,
-        face recognition features,
-        face detection models,
-        face recognition deep learning,
-        face detection neural network,
-        face recognition machine learning,
-        face detection AI,
-        face recognition artificial intelligence,
-        face detection library,
-        face recognition framework,
-        face detection opensource,
-        face recognition kotlin,
-        Android camera library,
-        face detection camera,
-        face recognition camera,
-        face detection preview,
-        face recognition preview,
-        face detection stream,
-        face recognition stream,
-        face detection live,
-        face recognition live,
-        face detection realtime,
-        face recognition realtime,
-        face detection processing,
-        face recognition processing,
-        face detection analysis,
-        face recognition analysis,
-        face detection security,
-        face recognition security,
-        face detection authentication,
-        face recognition authentication,
-        face detection verification,
-        face recognition verification,
-        face detection validation,
-        face recognition validation,
-        face detection matching,
-        face recognition matching,
-        face detection comparison,
-        face recognition comparison,
-        face detection similarity,
-        face recognition similarity,
-        face detection distance,
-        face recognition distance,
-        face detection metrics,
-        face recognition metrics,
-        face detection quality,
-        face recognition quality,
-        face detection accuracy,
-        face recognition accuracy,
-        face detection precision,
-        face recognition precision,
-        face detection recall,
-        face recognition recall,
-        face detection F1,
-        face recognition F1,
-        face detection benchmark,
-        face recognition benchmark,
-        face detection testing,
-        face recognition testing,
-        face detection evaluation,
-        face recognition evaluation,
-        face detection performance,
-        face recognition performance,
-        face detection optimization,
-        face detection efficiency,
-        face recognition efficiency,
-        face detection speed,
-        face recognition speed,
-        face detection latency,
-        face recognition latency,
-        face detection throughput,
-        face recognition throughput,
-        face detection scalability,
-        face recognition scalability,
-        face detection reliability,
-        face recognition reliability,
-        face detection robustness,
-        face recognition robustness,
-        face detection stability,
-        face detection consistency,
-        face recognition consistency">
-
-    <!-- Open Graph / Social Media Meta Tags -->
+    <meta name="description" content="A modern Jetpack Compose library for real-time face detection and smile verification on Android using ML Kit and CameraX.">
+    <meta name="keywords" content="aria danesh, android face verification, face detection, ml kit, jetpack compose, camerax, biometric, facial recognition, kotlin, android library">
     <meta property="og:title" content="Android Face Verification Library">
-    <meta property="og:description"
-          content="A robust and easy-to-integrate solution for face verification within Android applications">
+    <meta property="og:description" content="A simple and powerful Jetpack Compose library for adding face and smile detection to your Android app.">
     <meta property="og:type" content="website">
     <meta property="og:author" content="Aria Danesh">
 
-    <!-- Technical Metadata -->
-    <meta name="framework" content="Android, Jetpack Compose">
-    <meta name="programming-language" content="Kotlin">
-    <meta name="category" content="Android Library, Face Detection, Security">
-    <meta name="target-platform" content="Android 7.0+">
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-          rel="stylesheet">
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Styles -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="styles.css">
-    <style>
-        :root {
-            --primary-color: #7C4DFF;
-            --secondary-color: #00E5FF;
-            --background-color: #0A1929;
-            --card-bg: #132F4C;
-            --text-color: #FFFFFF;
-            --text-secondary: #B2BAC2;
-            --border-color: #1E4976;
-            --hover-color: #173A5E;
-            --code-bg: #1A2027;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-        }
-        
-        .navbar {
-            background-color: var(--card-bg) !important;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .navbar-brand, .nav-link {
-            color: var(--text-color) !important;
-        }
-
-        .nav-link:hover {
-            color: var(--secondary-color) !important;
-        }
-        
-        .hero {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: var(--text-color);
-            padding: 4rem 0;
-            margin-bottom: 2rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(rgba(10, 25, 41, 0.2), rgba(10, 25, 41, 0.4));
-        }
-
-        .hero .container {
-            position: relative;
-            z-index: 1;
-        }
-        
-        .feature-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 15px;
-            transition: all 0.3s ease;
-            margin-bottom: 1.5rem;
-            color: var(--text-color);
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-5px);
-            background-color: var(--hover-color);
-            border-color: var(--secondary-color);
-        }
-
-        .feature-card .card-title {
-            color: var(--text-color);
-        }
-
-        .feature-card .card-text {
-            color: var(--text-secondary);
-        }
-
-        .feature-card i {
-            font-size: 2rem;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
-        }
-        
-        .code-block {
-            background-color: var(--code-bg);
-            color: var(--text-color);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin: 1rem 0;
-            border: 1px solid var(--border-color);
-            font-family: 'Consolas', 'Monaco', monospace;
-        }
-
-        .code-block:hover {
-            border-color: var(--secondary-color);
-        }
-        
-        section {
-            margin: 4rem 0;
-        }
-
-        section h2 {
-            color: var(--text-color);
-            margin-bottom: 2rem;
-        }
-
-        section h4 {
-            color: var(--text-secondary);
-        }
-        
-        .footer {
-            background-color: var(--card-bg);
-            color: var(--text-color);
-            padding: 3rem 0;
-            margin-top: 3rem;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .footer a {
-            color: var(--text-secondary);
-            transition: color 0.3s ease;
-        }
-
-        .footer a:hover {
-            color: var(--secondary-color);
-        }
-
-        .btn-light {
-            background-color: var(--text-color);
-            color: var(--background-color);
-            border: none;
-        }
-
-        .btn-light:hover {
-            background-color: var(--text-secondary);
-            color: var(--background-color);
-            transform: translateY(-2px);
-        }
-
-        .btn-outline-light {
-            border-color: var(--text-color);
-            color: var(--text-color);
-        }
-
-        .btn-outline-light:hover {
-            background-color: var(--text-color);
-            color: var(--background-color);
-            transform: translateY(-2px);
-        }
-
-        /* Add smooth transitions */
-        * {
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
-        }
-    </style>
 </head>
 <body>
+
 <!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top">
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm fixed-top">
     <div class="container">
         <a class="navbar-brand" href="#">
-            <i class="bi bi-camera-reels-fill text-primary"></i>
+            <i class="bi bi-camera-reels-fill"></i>
             Face Verification
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarNav">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="#features">Features</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#installation">Installation</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#usage">Usage</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#contributing">Contributing</a>
-                </li>
+                <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                <li class="nav-item"><a class="nav-link" href="#installation">Installation</a></li>
+                <li class="nav-item"><a class="nav-link" href="#usage">Usage</a></li>
+                <li class="nav-item"><a class="nav-link" href="#contributing">Contributing</a></li>
             </ul>
         </div>
     </div>
@@ -349,64 +46,44 @@
 <section class="hero text-center">
     <div class="container">
         <h1 class="display-4 fw-bold">Android Face Verification Library</h1>
-        <p class="lead">A robust and easy-to-integrate solution for face verification within Android
-            applications</p>
+        <p class="lead">Add real-time face and smile detection to your Compose app with minimal effort.</p>
         <div class="mt-4">
             <a href="#installation" class="btn btn-light btn-lg me-2">Get Started</a>
-            <a href="https://github.com/arya458/FaceVerification"
-               class="btn btn-outline-light btn-lg">
+            <a href="https://github.com/arya458/AndroidFaceVerificationLibrary" target="_blank" class="btn btn-outline-light btn-lg">
                 <i class="bi bi-github"></i> View on GitHub
             </a>
         </div>
     </div>
 </section>
 
-<!-- Author Section -->
-<section class="author-section">
-    <div class="container">
-        <div class="author-name">Aria Danesh</div>
-        <p class="text-secondary">Creator & Maintainer</p>
-        <div class="social-links">
-            <a href="https://github.com/arya458" target="_blank">
-                <i class="bi bi-github"></i>
-            </a>
-            <a href="https://www.linkedin.com/in/aria-danesh-574ab8162/" target="_blank">
-                <i class="bi bi-linkedin"></i>
-            </a>
-        </div>
-    </div>
-</section>
-
 <!-- Features Section -->
-<section id="features" class="container py-5">
-    <h2 class="text-center mb-5">Key Features</h2>
-    <div class="row">
-        <div class="col-md-4 d-flex">
-            <div class="card feature-card shadow-sm">
-                <div class="card-body text-center">
-                    <i class="bi bi-camera-video"></i>
-                    <h5 class="card-title">Real-time Detection</h5>
-                    <p class="card-text">Advanced face detection and verification in real-time using
-                        ML Kit</p>
+<section id="features" class="container">
+    <h2 class="text-center">Why Use This Library?</h2>
+    <div class="row text-center">
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="card-body">
+                    <i class="bi bi-rocket-takeoff-fill"></i>
+                    <h5 class="card-title">Simple Integration</h5>
+                    <p class="card-text">Integrate with just one Composable and a simple callback.</p>
                 </div>
             </div>
         </div>
-        <div class="col-md-4 d-flex">
-            <div class="card feature-card shadow-sm">
-                <div class="card-body text-center">
-                    <i class="bi bi-phone"></i>
-                    <h5 class="card-title">Modern UI</h5>
-                    <p class="card-text">Beautiful UI components built with Jetpack Compose and
-                        Material Design 3</p>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="card-body">
+                    <i class="bi bi-palette-fill"></i>
+                    <h5 class="card-title">Highly Customizable</h5>
+                    <p class="card-text">Easily configure smile sensitivity, colors, and UI states.</p>
                 </div>
             </div>
         </div>
-        <div class="col-md-4 d-flex">
-            <div class="card feature-card shadow-sm">
-                <div class="card-body text-center">
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="card-body">
                     <i class="bi bi-shield-check"></i>
-                    <h5 class="card-title">Secure & Reliable</h5>
-                    <p class="card-text">Robust security features and reliable face verification</p>
+                    <h5 class="card-title">Modern & Reliable</h5>
+                    <p class="card-text">Built with CameraX, ML Kit, and Compose for lifecycle-aware performance.</p>
                 </div>
             </div>
         </div>
@@ -414,129 +91,126 @@
 </section>
 
 <!-- Installation Section -->
-<section id="installation" class="container py-5">
-    <h2 class="text-center mb-5">Installation</h2>
-    <div class="row">
-        <div class="col-md-6">
-            <h4>Add JitPack Repository</h4>
-            <pre class="code-block"><code>dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        mavenCentral()
-        maven { url 'https://jitpack.io' }
-    }
+<section id="installation" class="container">
+    <h2 class="text-center">Installation</h2>
+    <h4>1. Add Dependencies</h4>
+    <p>In your app-level `build.gradle.kts`, add the following:</p>
+    <pre class="code-block"><code>dependencies {
+    // CameraX for camera functionality
+    implementation("androidx.camera:camera-core:1.3.1")
+    implementation("androidx.camera:camera-camera2:1.3.1")
+    implementation("androidx.camera:camera-lifecycle:1.3.1")
+    implementation("androidx.camera:camera-view:1.3.1")
+
+    // Google ML Kit for Face Detection
+    implementation("com.google.mlkit:face-detection:16.1.6")
+
+    // Coil for loading the captured image (recommended)
+    implementation("io.coil-kt:coil-compose:2.5.0")
+
+    // Finally, include this library as a module
+    implementation(project(":FaceVerificationLib"))
 }</code></pre>
-        </div>
-        <div class="col-md-6">
-            <h4>Add Dependency</h4>
-            <pre class="code-block"><code>dependencies {
-    implementation 'com.github.arya458:FaceVerification:1.0.0'
-}</code></pre>
-        </div>
-    </div>
+    <h4>2. Add Permissions</h4>
+    <p>Add camera permissions to your `AndroidManifest.xml`:</p>
+    <pre class="code-block"><code>&lt;uses-feature android:name="android.hardware.camera.any" /&gt;
+&lt;uses-permission android:name="android.permission.CAMERA" /&gt;
+
+&lt;!-- Optional: for saving images to storage --&gt;
+&lt;uses-permission
+    android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    android:maxSdkVersion="28" /&gt;</code></pre>
 </section>
 
 <!-- Usage Section -->
-<section id="usage" class="container py-5">
-    <h2 class="text-center mb-5">Usage</h2>
-    <div class="row">
-        <div class="col-12">
-                <pre class="code-block"><code>@Composable
-fun MyVerificationScreen() {
+<section id="usage" class="container">
+    <h2 class="text-center">Usage Example</h2>
+    <p>Using the library is as simple as adding the `FaceVerificationComponent` to your UI and handling the `onSmileDetected` callback.</p>
+    <pre class="code-block"><code>@Composable
+fun FaceVerificationTestScreen() {
     val context = LocalContext.current
-    val faceDetectionCallback = remember {
-        object : FaceVerificationComponent.FaceDetectionCallback {
-            override fun onOneFaceDetected(imageProxy: ImageProxy) {
-                // Handle face detection
-                val base64Image = imageProxyToBase64(imageProxy)
-                // Process the image
+    val coroutineScope = rememberCoroutineScope()
+    var savedImageUri by remember { mutableStateOf&lt;Uri?&gt;(null) }
+
+    if (savedImageUri != null) {
+        // Show the captured image after detection
+        CapturedImageScreen(
+            imageUri = savedImageUri!!,
+            onRetake = { savedImageUri = null }
+        )
+    } else {
+        // Show the face verification view
+        FaceVerificationComponent(
+            onSmileDetected = { imageProxy ->
+                Log.d("MainActivity", "Smile detected! Processing image...")
+                coroutineScope.launch {
+                    // Convert to a Bitmap using the library's helper
+                    val bitmap = imageProxyToBitmap(imageProxy)
+                    // IMPORTANT: Always close the proxy after use!
+                    imageProxy.close()
+
+                    if (bitmap != null) {
+                        val uri = saveBitmap(context, bitmap, "smile_capture.jpg")
+                        savedImageUri = uri // Update UI to show the image
+                    }
+                }
             }
+        )
+    }
+}
+
+private suspend fun saveBitmap(context: Context, bitmap: Bitmap, filename: String): Uri? {
+    return withContext(Dispatchers.IO) {
+        val resolver = context.contentResolver
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+            put(MediaStore.MediaColumns.RELATIVE_PATH, "Pictures/YourAppName")
+        }
+
+        var uri: Uri? = null
+        try {
+            uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+                ?: throw IOException("Failed to create new MediaStore record.")
+
+            resolver.openOutputStream(uri)?.use { stream ->
+                if (!bitmap.compress(Bitmap.CompressFormat.JPEG, 95, stream)) {
+                    throw IOException("Failed to save bitmap.")
+                }
+            }
+            uri
+        } catch (e: Exception) {
+            Log.e("BitmapSaver", "Error saving bitmap: ${e.message}")
+            // Clean up the created entry if saving fails
+            uri?.let { resolver.delete(it, null, null) }
+            null
         }
     }
-
-    FaceVerificationComponent(
-        context = context,
-        faceDetectionCallback = faceDetectionCallback
-    )
 }</code></pre>
-        </div>
-    </div>
 </section>
 
 <!-- Contributing Section -->
-<section id="contributing" class="container py-5">
-    <h2 class="text-center mb-5">Contributing</h2>
-    <div class="row">
-        <div class="col-md-4 d-flex">
-            <div class="card feature-card shadow-sm">
-                <div class="card-body text-center">
-                    <i class="bi bi-bug"></i>
-                    <h5 class="card-title">Report Bugs</h5>
-                    <p class="card-text">Found an issue? Report it on GitHub</p>
-                </div>
-            </div>
+<section id="contributing" class="container">
+    <div class="author-section">
+        <div class="author-name">Aria Danesh</div>
+        <p class="text-secondary">Creator & Maintainer</p>
+        <div class="social-links">
+            <a href="https://github.com/arya458" target="_blank" title="GitHub"><i class="bi bi-github"></i></a>
+            <a href="https://linkedin.com/in/your-linkedin-username" target="_blank" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
         </div>
-        <div class="col-md-4 d-flex">
-            <div class="card feature-card shadow-sm">
-                <div class="card-body text-center">
-                    <i class="bi bi-lightbulb"></i>
-                    <h5 class="card-title">Suggest Features</h5>
-                    <p class="card-text">Have an idea? Share it with us</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 d-flex">
-            <div class="card feature-card shadow-sm">
-                <div class="card-body text-center">
-                    <i class="bi bi-code-square"></i>
-                    <h5 class="card-title">Submit PRs</h5>
-                    <p class="card-text">Contribute code to improve the library</p>
-                </div>
-            </div>
-        </div>
+        <p class="mt-3">Passionate about modern Android development and accessible AI-driven user experiences.</p>
+        <p>Contributions are welcome! Found a bug? Have an idea? Feel free to <a href="https://github.com/arya458/AndroidFaceVerificationLibrary/issues" target="_blank">open an issue</a> or submit a pull request.</p>
     </div>
 </section>
 
+
 <!-- Footer -->
-<footer class="footer">
-    <div class="container text-center">
-        <p>Made with ❤️ by Aria Danesh</p>
-        <div class="mt-3">
-            <a href="https://github.com/arya458" class="text-white me-3">
-                <i class="bi bi-github fs-4"></i>
-            </a>
-            <a href="https://www.linkedin.com/in/aria-danesh-574ab8162/" class="text-white">
-                <i class="bi bi-linkedin fs-4"></i>
-            </a>
-        </div>
-        <p class="mt-3">© 2024 Android Face Verification Library. All rights reserved.</p>
+<footer class="footer text-center">
+    <div class="container">
+        <p>&copy; 2025 Aria Danesh. Licensed under the Apache License, Version 2.0.</p>
     </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // Add animation to sections when they come into view
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-            }
-        });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('section').forEach(section => {
-        observer.observe(section);
-    });
-
-    // Smooth scrolling for navigation links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
-        });
-    });
-</script>
 </body>
-</html> 
+</html>
