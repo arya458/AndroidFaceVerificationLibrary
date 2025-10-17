@@ -1,5 +1,5 @@
 [versions]
-agp = "8.9.1"
+agp = "8.8.0"
 cameraCamera2 = "1.4.2"
 gradleSimple = "1.0"
 kotlin = "2.0.21"
@@ -14,6 +14,7 @@ faceDetection = "16.1.7"
 appcompat = "1.7.0"
 lottieCompose = "6.4.1"
 material = "1.12.0"
+foundation = "1.8.2"
 
 
 [libraries]
@@ -39,6 +40,7 @@ face-detection = { module = "com.google.mlkit:face-detection", version.ref = "fa
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 
 
 [plugins]
