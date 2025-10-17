@@ -2,42 +2,19 @@ package com.aria.danesh.faceverificationlib.view
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.OptIn
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageProxy
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -45,33 +22,25 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.aria.danesh.faceverificationlib.R
 import com.aria.danesh.faceverificationlib.callback.FaceDetectionCallback
 import com.aria.danesh.faceverificationlib.managers.FaceDetectionManager
-import com.aria.danesh.faceverificationlib.utils.imageProxyToBase64
+import com.aria.danesh.faceverificationlib.state.FaceDetectionState
+import com.aria.danesh.faceverificationlib.state.FaceUiState
 import com.aria.danesh.faceverificationlib.view.compose.FaceOverlay
-import com.google.mlkit.vision.face.Face
+import com.aria.danesh.faceverificationlib.view.compose.FaceStatusIndicator
 
-
+@androidx.annotation.OptIn(ExperimentalGetImage::class)
 @OptIn(ExperimentalGetImage::class)
 @Composable
 fun FaceVerificationComponent(
-    onSmile: (ImageProxy) -> Unit,
-    onFaceDetected: () -> Unit,
-    onFacesDetected: () -> Unit,
-    noFaceDetected: () -> Unit,
-    onError: () -> Unit
+    onSmileDetected: (ImageProxy) -> Unit,
+    config: FaceVerificationConfig = defaultFaceVerificationConfig()
 ) {
-
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val previewView = remember { PreviewView(context) }
-    var detectedFace by remember { mutableStateOf<Face?>(null) }
-    var faceDetectionError by remember { mutableStateOf<String>("") }
     var cameraPermissionGranted by remember { mutableStateOf(false) }
-    var imageProxy by remember { mutableStateOf<ImageProxy?>(null) }
 
-    val pColor = MaterialTheme.colorScheme.primary
-    val errorColor = MaterialTheme.colorScheme.error
-    var color by remember { mutableStateOf<Color>(pColor) }
-    var icon by remember { mutableIntStateOf(0) }
+    // State for UI
+    var uiState by remember { mutableStateOf<FaceUiState>(FaceUiState.Initial) }
 
     val cameraPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -80,9 +49,8 @@ fun FaceVerificationComponent(
     }
 
     LaunchedEffect(Unit) {
-        val permissionResult =
-            ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
-        if (permissionResult == PackageManager.PERMISSION_GRANTED) {
+        val permission = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+        if (permission == PackageManager.PERMISSION_GRANTED) {
             cameraPermissionGranted = true
         } else {
             cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
@@ -92,115 +60,89 @@ fun FaceVerificationComponent(
     if (cameraPermissionGranted) {
         val faceDetectionCallback = remember {
             object : FaceDetectionCallback {
-                override fun onOneFaceDetected(face: Face, ip: ImageProxy) {
-                    detectedFace = face
-                    icon = R.drawable.smile
-                    if ((face.smilingProbability ?: 0f) > 0.5f) {
-                        color = Color.Green
-                        faceDetectionError = " Nice "
-                        imageProxy?.let {
-                            onSmile(ip)
+                override fun onFaceDetectionStateChanged(state: FaceDetectionState) {
+                    var imageProxyToClose: ImageProxy? = null
+                    uiState = when (state) {
+                        is FaceDetectionState.OneFace -> {
+                            imageProxyToClose = state.imageProxy
+                            val isSmiling = (state.face.smilingProbability ?: 0f) > config.smileThreshold
+                            if (isSmiling) {
+                                onSmileDetected(state.imageProxy)
+                                FaceUiState.Success(state.face, state.imageProxy, "Smile Detected!")
+                            } else {
+                                FaceUiState.Scanning(state.face, state.imageProxy, "Please Smile")
+                            }
                         }
-
-                    } else {
-                        color = pColor
-                        faceDetectionError = " Smile Please "
-                        onFaceDetected()
+                        is FaceDetectionState.ManyFaces -> {
+                            imageProxyToClose = state.imageProxy
+                            FaceUiState.Error(null, state.imageProxy, "Multiple Faces Detected")
+                        }
+                        is FaceDetectionState.NoFace -> {
+                            imageProxyToClose = state.imageProxy
+                            FaceUiState.Error(null, state.imageProxy, "No Face Detected")
+                        }
+                        is FaceDetectionState.Error -> {
+                            FaceUiState.Error(null, null, state.exception.localizedMessage ?: "Detection Error")
+                        }
                     }
 
-                    imageProxy = ip
-                }
-
-                override fun onManyFacesDetected(faces: List<Face?>, ip: ImageProxy) {
-                    faceDetectionError = "Many Faces Detected"
-                    icon = R.drawable.bad
-                    detectedFace = null
-                    color = errorColor
-                    imageProxy = ip
-                    onFacesDetected()
-                }
-
-                override fun onNoFaceDetected(ip: ImageProxy) {
-                    faceDetectionError = "No Face Detected"
-                    icon = R.drawable.bad
-                    detectedFace = null
-                    color = errorColor
-                    imageProxy = ip
-                    noFaceDetected()
-                }
-
-
-                override fun onFaceDetectionError(exception: Exception) {
-                    faceDetectionError = exception.localizedMessage ?: "Face detection error"
-                    icon = R.drawable.bad
-                    detectedFace = null
-                    color = errorColor
-                    onError()
+                    // Ensure ImageProxy is closed if not passed to the success callback
+                    val isSuccessState = uiState is FaceUiState.Success
+                    if (!isSuccessState) {
+                        imageProxyToClose?.close()
+                    }
                 }
             }
         }
-        val faceDetectionManager = remember(lifecycleOwner, previewView, faceDetectionCallback) {
+
+        val faceDetectionManager = remember(faceDetectionCallback) {
             FaceDetectionManager(context, lifecycleOwner, previewView, faceDetectionCallback)
         }
-        DisposableEffect(lifecycleOwner, faceDetectionManager) {
+
+        DisposableEffect(Unit) {
             onDispose {
                 faceDetectionManager.stopCamera()
             }
         }
+
         Box(Modifier.fillMaxSize()) {
-            AndroidView(
-                factory = { previewView },
-                modifier = Modifier.fillMaxSize()
-            )
-            detectedFace?.let { face ->
-                FaceOverlay(face, R.drawable.frame, imageProxy, true, color)
+            AndroidView({ previewView }, modifier = Modifier.fillMaxSize())
+
+            val overlayColor = when (uiState) {
+                is FaceUiState.Success -> config.successColor
+                is FaceUiState.Scanning -> config.primaryColor
+                else -> config.errorColor
             }
 
-            if (icon != 0)
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = 100.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Bottom
-                ) {
-                    Surface(
-                        modifier = Modifier
-                            .wrapContentSize(),
-                        color = MaterialTheme.colorScheme.surface,
-                        shadowElevation = 5.dp,
-                        shape = RoundedCornerShape(20.dp)
-                    ) {
-                        Row(
-                            Modifier
-                                .wrapContentSize()
-                                .padding(20.dp),
-                            Arrangement.Start,
-                            Alignment.CenterVertically
-                        ) {
+            FaceOverlay(
+                detectedFace = uiState.face,
+                frameDrawableId = R.drawable.frame,
+                imageProxy = uiState.imageProxy,
+                isFrontCamera = true,
+                color = overlayColor
+            )
 
-                            Image(
-                                painter = painterResource(icon),
-                                "",
-                                Modifier.size(40.dp),
-                                colorFilter = ColorFilter.tint(color)
-                            )
-                            Spacer(Modifier.size(10.dp))
-                            Text(
-                                faceDetectionError,
-                                style = TextStyle.Default.copy(color = MaterialTheme.colorScheme.onSurface),
-                                modifier = Modifier.wrapContentSize()
-                            )
-
-                        }
-                    }
+            if (uiState !is FaceUiState.Initial) {
+                // Determine icon based on state
+                val iconRes = when (uiState) {
+                    is FaceUiState.Success, is FaceUiState.Scanning -> R.drawable.smile
+                    else -> R.drawable.bad
                 }
 
+                FaceStatusIndicator(
+                    message = uiState.message,
+                    iconRes = iconRes,
+                    iconTint = overlayColor,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 64.dp)
+                )
+            }
         }
     } else {
-        Text(text = "Camera permission not granted")
+        // A placeholder for when permission is not granted
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("Camera permission is required to use this feature.")
+        }
     }
-
 }
-
-
