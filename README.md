@@ -1,5 +1,5 @@
 # Android Face Verification Library
-
+# support me with stars please
 A robust and easy-to-integrate solution for face verification within Android applications. This library leverages the device's camera and advanced face detection and recognition techniques to enable secure and seamless user authentication and identification.
 
 **Author:** Aria Danesh
